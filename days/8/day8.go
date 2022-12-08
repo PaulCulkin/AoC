@@ -93,7 +93,7 @@ func isVisible(tree Tree, grid [][]int) bool {
 	return visible(tree, grid, North{}) || visible(tree, grid, South{}) || visible(tree, grid, East{}) || visible(tree, grid, West{})
 }
 
-func visible(tree Tree, grid [][]int, direction Direction) bool {
+func visible[D Direction](tree Tree, grid [][]int, direction D) bool {
 	height := grid[tree.row][tree.column]
 
 	for i := direction.modifyStart(tree); direction.isEndCondition(i, grid); direction.afterLook(&i) {
@@ -117,64 +117,64 @@ type Direction interface {
 	selectTree([][]int, Tree, int) int
 }
 
-type North struct{}
+type Horizontal struct{}
+type Vertical struct{}
+type Ascending struct{}
+type Descending struct{}
+
+type North struct {
+	Vertical
+	Descending
+}
+
+type South struct {
+	Vertical
+	Ascending
+}
+
+type East struct {
+	Horizontal
+	Ascending
+}
+
+type West struct {
+	Horizontal
+	Descending
+}
+
+func (n Horizontal) selectTree(grid [][]int, tree Tree, delta int) int {
+	return grid[tree.row][delta]
+}
+func (n Vertical) selectTree(grid [][]int, tree Tree, delta int) int {
+	return grid[delta][tree.column]
+}
+func (n Ascending) afterLook(rowcol *int) {
+	*rowcol++
+}
+func (n Descending) afterLook(rowcol *int) {
+	*rowcol--
+}
+func (n Descending) isEndCondition(rowcol int, grid [][]int) bool {
+	return rowcol >= 0
+}
 
 func (n North) modifyStart(tree Tree) int {
 	return tree.row - 1
 }
-func (n North) isEndCondition(row int, grid [][]int) bool {
-	return row >= 0
-}
-func (n North) afterLook(row *int) {
-	*row--
-}
-func (n North) selectTree(grid [][]int, tree Tree, delta int) int {
-	return grid[delta][tree.column]
-}
-
-type South struct{}
-
 func (n South) modifyStart(tree Tree) int {
 	return tree.row + 1
 }
 func (n South) isEndCondition(row int, grid [][]int) bool {
 	return row < len(grid)
 }
-func (n South) afterLook(row *int) {
-	*row++
-}
-func (n South) selectTree(grid [][]int, tree Tree, delta int) int {
-	return grid[delta][tree.column]
-}
-
-type East struct{}
-
 func (n East) modifyStart(tree Tree) int {
 	return tree.column + 1
 }
 func (n East) isEndCondition(column int, grid [][]int) bool {
 	return column < len(grid[0])
 }
-func (n East) afterLook(row *int) {
-	*row++
-}
-func (n East) selectTree(grid [][]int, tree Tree, delta int) int {
-	return grid[tree.row][delta]
-}
-
-type West struct{}
-
 func (n West) modifyStart(tree Tree) int {
 	return tree.column - 1
-}
-func (n West) isEndCondition(column int, grid [][]int) bool {
-	return column >= 0
-}
-func (n West) afterLook(row *int) {
-	*row--
-}
-func (n West) selectTree(grid [][]int, tree Tree, delta int) int {
-	return grid[tree.row][delta]
 }
 
 func init() {
