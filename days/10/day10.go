@@ -66,7 +66,7 @@ func main() {
 			if j == register || j == register+1 || j == register-1 {
 				print("#")
 			} else {
-				print(".")
+				print(" ")
 			}
 		}
 		println()
