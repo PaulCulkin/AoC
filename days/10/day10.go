@@ -18,20 +18,21 @@ type CPU struct {
 	register       int
 }
 
-func (cpu *CPU) calculateSignalStrength() {
-	cpu.cycles++
-	cpu.signalStrength[cpu.cycles] = cpu.register * cpu.cycles
+func (cpu *CPU) calculateSignalStrength(cycleCount int) {
+	for i := 0; i < cycleCount; i++ {
+		cpu.cycles++
+		cpu.signalStrength[cpu.cycles] = cpu.register * cpu.cycles
+	}
 }
 
 func (cpu *CPU) add(val int) {
-	for i := 0; i < 2; i++ {
-		cpu.calculateSignalStrength()
-	}
+	cpu.calculateSignalStrength(2)
 	cpu.register += val
 }
 
 func (cpu *CPU) noop() {
-	cpu.calculateSignalStrength()
+	cpu.calculateSignalStrength(1)
+	// no operation
 }
 
 func main() {
@@ -48,9 +49,11 @@ func main() {
 		}
 	}
 
-	start := 20
-	interval := 40
-	count := 6
+	const (
+		start    = 20
+		interval = 40
+		count    = 6
+	)
 
 	total := 0
 
