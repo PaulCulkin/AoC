@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"learning/util"
 	"log"
+	"math"
 	"strconv"
 	"strings"
 )
@@ -59,11 +60,11 @@ func main() {
 
 	fmt.Printf("Part 1: %v\n", total) // 11820
 
-	for i := 0; i < 6; i++ {
-		for j := 0; j < 40; j++ {
-			cycleNum := (40 * i) + j
+	for i := 0; i < count; i++ {
+		for j := 0; j < interval; j++ {
+			cycleNum := (interval * i) + j
 			register := cpu.signalStrength[cycleNum+1] / (cycleNum + 1)
-			if j == register || j == register+1 || j == register-1 {
+			if math.Abs(float64(register-j)) <= 1 {
 				print("#")
 			} else {
 				print(" ")
